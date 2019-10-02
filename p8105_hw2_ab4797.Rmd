@@ -90,6 +90,19 @@ _ Dataset Description
 
 This merged data comes from multiple datasets used to indicate when researchers may “p-hack” as a means of finding significant results (a very not cool thing to do!). The “pols-month” data contains observations regarding the number of politicians who are democratic or republican. The S&P data represents a measure of the stock market as a whole, and Unemployment data refers to the number of people unemployed at any given time. After SNP, Unemployment, and Pols datasets were merged, the dataset resulted in `r nrow(snp_pols_unemployment_merge)` total observations. The range of years in this new dataset is `r range(pull(snp_pols_unemployment_merge, year))`. Lastly, key variable names which we want to include are `r names(snp_pols_unemployment_merge)`. 
 
+# PROBLEM 3 
+
+```{r import and clean baby naes}
+babynames_data_1 = read_csv("./data/Popular_Baby_Names.csv", col_types = "ccccic") %>% 
+  janitor::clean_names() %>% 
+  distinct() %>% 
+  mutate_all(toupper) %>% 
+  rename("year" = year_of_birth, name = childs_first_name) %>% 
+  mutate(ethnicity = replace(ethnicity, ethnicity == "BLACK NON HISP", "BLACK NON HISPANIC")) %>% 
+  mutate(ethnicity = replace(ethnicity, ethnicity == "WHITE NON HISP", "WHITE NON HISPANIC")) %>% 
+ mutate(ethnicity = replace(ethnicity, ethnicity == "ASIAN AND PACI", "ASIAN AND PACIFIC ISLANDER"))  
+```
+
 
 
 
