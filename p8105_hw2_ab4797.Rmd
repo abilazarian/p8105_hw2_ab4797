@@ -1,0 +1,29 @@
+---
+title: "p8105_hw2_ab4797"
+author: "Ani Bilazarian"
+date: "10/1/2019"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(readxl)
+```
+
+# Problem 1
+
+_ Import and Clean Trash Wheel Data
+
+```{r import trash wheel data}
+trash_wheel = read_excel("data/trash_wheel_updated.xlsx", sheet = "Mr. Trash Wheel", range = "A2:N408") %>% 
+  janitor::clean_names() %>% 
+  drop_na() %>% 
+  mutate(sports_balls = as.integer(round(sports_balls))) %>% 
+rename ("weight" = weight_tons, "volume" = volume_cubic_yards)
+```
+
+
+
+
+
