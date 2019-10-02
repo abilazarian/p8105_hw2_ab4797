@@ -26,24 +26,36 @@ rename ("weight" = weight_tons, "volume" = volume_cubic_yards)
 _ Cleaning precipitation data 2018 and adding the variable 'Year'
 
 ```{r read and clean precip 18 data}
-library(readxl)
-precip_18 = read_excel("data/trash_wheel_updated.xlsx",
-                  sheet = "2018 Precipitation", range = "A2:B14") %>% 
-      janitor::clean_names() %>% 
-      mutate(year = 2018) %>% 
-      mutate(month = month.name[month])
+precip_18 = read_excel("data/trash_wheel_updated.xlsx", sheet = "2018 Precipitation", range = "A2:B14") %>% 
+    janitor::clean_names() %>% 
+    drop_na() %>% 
+    mutate(year = 2018) %>% 
+    mutate(month = month.name[month])
 ```
 
 _ Cleaning precipitation data 2017 and adding the variable 'Year'
 
 ```{Import, Clean, and Combine precip 17}
-precip_17 = read_excel("data/trash_wheel_updated.xlsx", 
-                                  sheet = "2017 Precipitation", range = "A2:B14") %>% 
-  janitor::clean_names() %>% 
-  mutate (year = 2017) %>% 
-  mutate(month = month.name[month])
+precip_17 = read_excel("data/trash_wheel_updated.xlsx", sheet = "2017 Precipitation", range = "A2:B14") %>% 
+    janitor::clean_names() %>% 
+    drop_na() %>% 
+    mutate (year = 2017) %>% 
+    mutate(month = month.name[month]) 
 
 precip_1718 = bind_rows(precip_17, precip_18)
+```
+
+# Problem 2
+
+_ Import & Clean Pols data
+
+```{r read in pols data}
+pols_month = read_csv("./data/pols-month.csv", col_types = "cciiiciii") %>% 
+  janitor::clean_names() %>% 
+  separate("mon", into = c("year", "month", "day")) %>% 
+  mutate(month = month.name[as.integer(month)]) %>% 
+  rename("gop" = prez_gop, "dem" = prez_dem) %>% 
+  select(-day)
 ```
 
 
