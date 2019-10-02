@@ -36,15 +36,15 @@ precip_18 = read_excel("data/trash_wheel_updated.xlsx",
 
 _ Cleaning precipitation data 2017 and adding the variable 'Year'
 
-```{r read and clean precip 17 data}
-library(readxl)
+```{Import, Clean, and Combine precip 17}
 precip_17 = read_excel("data/trash_wheel_updated.xlsx", 
                                   sheet = "2017 Precipitation", range = "A2:B14") %>% 
   janitor::clean_names() %>% 
   mutate (year = 2017) %>% 
   mutate(month = month.name[month])
-```
 
+precip_1718 = bind_rows(precip_17, precip_18)
+```
 
 
 
