@@ -95,27 +95,35 @@ This merged data comes from multiple datasets used to indicate when researchers 
 _ Import and Clean Baby Names data
 
 ```{r import and clean baby names}
-babynames_data_1 = read_csv("./data/Popular_Baby_Names.csv", col_types = "ccccic") %>% 
+babynames_data_1 = read_csv("./data/Popular_Baby_Names.csv", col_types = "dcccii") %>% 
   janitor::clean_names() %>% 
   distinct() %>% 
   mutate_all(toupper) %>% 
-  rename("year" = year_of_birth, name = childs_first_name) %>% 
+  rename("year" = year_of_birth, "name" = childs_first_name) %>% 
   mutate(ethnicity = replace(ethnicity, ethnicity == "BLACK NON HISP", "BLACK NON HISPANIC")) %>% 
   mutate(ethnicity = replace(ethnicity, ethnicity == "WHITE NON HISP", "WHITE NON HISPANIC")) %>% 
- mutate(ethnicity = replace(ethnicity, ethnicity == "ASIAN AND PACI", "ASIAN AND PACIFIC ISLANDER"))  
+ mutate(ethnicity = replace(ethnicity, ethnicity == "ASIAN AND PACI", "ASIAN AND PACIFIC ISLANDER")) %>% 
+  mutate(year = as.numeric(year))  %>% 
+  mutate(rank = as.numeric(rank)) %>% 
+  mutate (count = as.numeric(count))
+
 ```
 
 _ Table showing rank of the name "Olivia" 
 
 This table shows the rank in popularity of the name “Olivia” as a female baby name over time according to ethnicities. 
 
+
+
 ```{r table for Olivia }
 babynames_data_1 %>% 
   group_by(year) %>% 
   filter(name == "OLIVIA") %>% 
   select ("year", "ethnicity", "rank") %>% 
-  knitr:: kable(digits = 1)
+  pivot_wider(names_from = "year", values_from = "rank") %>% 
+  knitr:: kable(digits = 1) 
 ```
+
 
 _ Table showing most popular name among male children over time
 
@@ -125,14 +133,21 @@ This table shows the most popular name among male children over time according t
 babynames_data_1 %>% 
   group_by(year) %>% 
   filter(gender == "MALE", rank == "1") %>% 
-  select ("year", "ethnicity", "rank", "name") %>% 
-  knitr:: kable(digits = 1)
+  select (year, ethnicity, rank, name) %>%
+  pivot_wider(names_from = "year", values_from = "name") %>% 
+  knitr:: kable(digits = 1) 
 ```
 
-```{r building a scatterplot}
-babynames_data_1 %>% 
-  filter(ethnicity == "WHITE NON HISPANIC", gender == "MALE", year == "2016") %>% 
-ggplot(aes(x = rank, y = count)) + geom_point()
+_ Scatterplot
+
+This scatterplot shows the number of children with a name against the rank in popularity of that name for the year 2016. It took me about 4 hours to make, I hope you enjoy! 
+
+```{r making the scatterplot}
+library(ggridges)
+babynames_data_plot = filter(babynames_data_1, ethnicity == "WHITE NON HISPANIC", 
+                             gender == "MALE", year == "2016") 
+
+ggplot(babynames_data_plot, aes(x = rank, y = count)) + geom_point() 
 ```
 
 
