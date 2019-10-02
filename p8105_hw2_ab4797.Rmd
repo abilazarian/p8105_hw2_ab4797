@@ -79,10 +79,12 @@ unemployment_data = read_csv("./data/unemployment.csv", col_types = "cdddddddddd
     pivot_longer (jan:dec, names_to = "month", values_to = "count") 
 ```
 
+_ Merge SNP, Pols, and Unemployment Data 
 
-
-
-`` 
+```{r merging SNP into pols}
+snp_pols_merge = left_join(pols_month, snp, by = c("month", "year"))
+snp_pols_unemployment_merge = left_join(snp_pols_merge, unemployment_data, by = c("month", "year"))
+```
 
 
 
