@@ -1,6 +1,6 @@
 ---
-title: "p8105_hw2_ab4797"
-author: "Ani Bilazarian"
+title: "Homework 2"
+author: "Ani Bilazarian, uni: ab4797"
 date: "10/1/2019"
 output: github_document
 ---
@@ -46,7 +46,39 @@ precip_1718 = bind_rows(precip_17, precip_18)
 
 _ Dataset Description
 
-This is a publicly available dataset showing us data regardining trash collected from Baltimore's inner harbor. To understand the amount of precipitation from 2017-2018, we combined two data sets. In total there are `r nrow(precip_1718)` observations in the combined resulting datasets. In the dataset precipitation for 2017 there are `r nrow(precip_17)` and in the dataset for 2018 there are `r nrow(precip_18)`. The final dataset has `r ncol(precip_1718)` number of columns, and the key variables represented are Month, Year, and Total Precipitation in inches. The total precipitation in 2018 was `r sum(pull(precip_18, total))` The median number of sportsballs in a dumpster in 2017 was `r median(pull(trash_wheel %>% filter (year == 2017), sports_balls))` 
+This is a publicly available dataset showing us data regarding trash collected from Baltimore's inner harbor. To understand the amount of precipitation from 2017-2018, we combined two data sets. In total there are `r nrow(precip_1718)` observations in the combined resulting datasets. In the dataset precipitation for 2017 there are `r nrow(precip_17)` and in the dataset for 2018 there are `r nrow(precip_18)`. The final dataset has `r ncol(precip_1718)` number of columns, and the key variables represented are Month, Year, and Total Precipitation in inches. The total precipitation in 2018 was `r sum(pull(precip_18, total))` The median number of sportsballs in a dumpster in 2017 was `r median(pull(trash_wheel %>% filter (year == 2017), sports_balls))` 
+
+
+# Problem 2
+
+_ Import and Clean Pols data
+
+```{r read in pols data}
+pols_month = read_csv("./data/pols-month.csv", col_types = "cciiiciii") %>% 
+  janitor::clean_names() %>% 
+  separate("mon", into = c("year", "month", "day")) %>% 
+  mutate(month = month.name[as.integer(month)]) %>% 
+  rename("gop" = prez_gop, "dem" = prez_dem) %>% 
+  select(-day)
+```
+_ Import and Clean SNP data
+
+```{r read in SNP data}
+snp = read_csv("./data/snp.csv", col_types = "cd") %>% 
+  janitor::clean_names() %>% 
+  separate("date", into = c("day", "month", "year")) %>% 
+  select("year", "month", "day", "close") %>% 
+  mutate(month = month.name[as.integer(month)]) %>% 
+  select(-day)
+```
+
+_ Import and Clean Unemployment data
+
+```{r read in unemployment data}
+unemployment_data = read_csv("./data/unemployment.csv", col_types = "cdddddddddddd") %>%     janitor::clean_names() %>% 
+    pivot_longer (jan:dec, names_to = "month", values_to = "count") 
+```
+
 
 
 
